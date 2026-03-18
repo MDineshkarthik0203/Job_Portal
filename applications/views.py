@@ -39,6 +39,20 @@ def apply_job(request, job_id):
 
     return render(request, 'apply.html', {'job': job})
 
+def job_applications(request, job_id):
+    job = Job.objects.get(id=job_id)
+
+    # only recruiter who created job
+    if request.user != job.created_by:
+        return redirect('/')
+
+    applications = Application.objects.filter(job=job)
+
+    return render(request, 'job_applications.html', {
+        'applications': applications,
+        'job': job
+    })
+
 class ApplicationViewSet(viewsets.ModelViewSet):
     queryset = Application.objects.all()
     serializer_class = ApplicationSerializer

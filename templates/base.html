@@ -23,6 +23,10 @@
         <a href="/register/">Register</a>
         {% endif %}
       </div>
+      {% if user.is_authenticated and user.role == 'recruiter' %}
+      <a href="/add-job/">+ Post Job</a>
+      <a href="/my-jobs/">My Jobs</a>
+      {% endif %}
     </nav>
 
     <div class="main">{% block content %}{% endblock %}</div>

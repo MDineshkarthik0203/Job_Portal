@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Job
 from rest_framework import viewsets
 from .serializers import JobSerializer
@@ -18,6 +18,30 @@ def job_list(request):
         'jobs': jobs,
         'applied_jobs': applied_jobs
     })
+
+def add_job(request):
+    if not request.user.is_authenticated or request.user.role != 'recruiter':
+        return redirect('/')
+
+    if request.method == "POST":
+        Job.objects.create(
+            title=request.POST.get('title'),
+            company=request.POST.get('company'),
+            location=request.POST.get('location'),
+            salary=request.POST.get('salary'),
+            description=request.POST.get('description'),
+            created_by=request.user
+        )
+        return redirect('/')
+
+    return render(request, 'add_job.html')
+
+def recruiter_jobs(request):
+    if request.user.role != 'recruiter':
+        return redirect('/')
+
+    jobs = Job.objects.filter(created_by=request.user)
+    return render(request, 'recruiter_jobs.html', {'jobs': jobs})
 
 
 class JobViewSet(viewsets.ModelViewSet):
