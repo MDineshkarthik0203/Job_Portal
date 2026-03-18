@@ -5,13 +5,21 @@ from django.contrib.auth.models import User
 
 def register_page(request):
     if request.method == "POST":
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        role = request.POST.get('role')
+
+        if not role:
+            return render(request, 'register.html', {'error': 'Select role'})
+
         user = User.objects.create_user(
-            username=request.POST.get('username'),
-            email=request.POST.get('email'),
-            password=request.POST.get('password'),
+            username=username,
+            email=email,
+            password=password
         )
 
-        user.role = request.POST.get('role')
+        user.role = role
         user.save()
 
         return redirect('/login/')
