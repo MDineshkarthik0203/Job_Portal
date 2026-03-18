@@ -20,8 +20,8 @@ def job_list(request):
     })
 
 def add_job(request):
-    if not request.user.is_authenticated or request.user.role != 'recruiter':
-        return redirect('/')
+    if not request.user.is_authenticated:
+        return redirect('/login/')
 
     if request.method == "POST":
         Job.objects.create(
